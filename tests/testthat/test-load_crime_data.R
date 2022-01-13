@@ -1,0 +1,11 @@
+test_that("Data loads correctly", {
+  D = load_crime_data(system.file("testdata", "test_crime_data.csv", package="chicagomodel"), "2019-01-01", "2019-11-20", list("ASSAULT", "DECEPTIVE PRACTICE","BATTERY"))
+  expect_equal(dim(D)[1], 2)
+  expect_equal(D[1,1], 11864018)
+  expect_equal(D[2,1], 11859656)
+  D = load_crime_data(system.file("testdata", "test_crime_data.csv", package="chicagomodel"), end_time="2019-11-21", crime=list("ASSAULT", "DECEPTIVE PRACTICE","BATTERY"))
+  expect_equal(dim(D)[1], 3)
+  expect_equal(D[1,1], 11864018)
+  expect_equal(D[2,1], 11859656)
+  expect_equal(D[3,1], 11897198)
+})
