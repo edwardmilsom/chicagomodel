@@ -15,7 +15,7 @@ undo_scaling = function(X,centre,scale){
 generate_new_points = function(gmm_pp,t_delta=1,area_bounds=list(c(-87.84918,41.6608), c(-87.40973,41.98827))){
   scaled_lower = as.vector(scale(matrix(area_bounds[[1]],nrow=1),center=gmm_pp$scaling_params$centre,scale=gmm_pp$scaling_params$scale))
   scaled_upper = as.vector(scale(matrix(area_bounds[[2]],nrow=1),center=gmm_pp$scaling_params$centre,scale=gmm_pp$scaling_params$scale))
-  points = spatstat.core::rpoispp(gmm_pp$rate_func,win=owin(c(scaled_lower[1],scaled_upper[1]),c(scaled_lower[2],scaled_upper[2])), t_delta=t_delta)
+  points = spatstat.core::rpoispp(gmm_pp$rate_func,win=spatstat.geom::owin(c(scaled_lower[1],scaled_upper[1]),c(scaled_lower[2],scaled_upper[2])), t_delta=t_delta)
   if(points$n == 0){
     D = data.frame(matrix(ncol=3,nrow=0))
     colnames(D) = c("Longitude","Latitude","Date")
@@ -24,7 +24,7 @@ generate_new_points = function(gmm_pp,t_delta=1,area_bounds=list(c(-87.84918,41.
   else{
     X = cbind(points$x,points$y)
     unscaled_X = undo_scaling(X,gmm_pp$scaling_params$centre,gmm_pp$scaling_params$scale)
-    one_day = as_datetime("2019-01-02") - as_datetime("2019-01-01")
+    one_day = lubridate::as_datetime("2019-01-02") - lubridate::as_datetime("2019-01-01")
     times = runif(points$n)*one_day*t_delta + gmm_pp$date_range$last
     D = data.frame("Longitude"=unscaled_X[,1],"Latitude"=unscaled_X[,2],"Date"=times)
     return(D)
